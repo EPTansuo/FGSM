@@ -8,7 +8,7 @@ from torch.autograd import Variable
 from torchvision.utils import save_image
 
 from models.toynet import ToyNet
-from datasets.datasets import return_data
+from datasets import return_data
 from utils.utils import rm_dir, cuda, where
 from adversary import Attack
 
@@ -105,7 +105,8 @@ class Solver(object):
                 logit = self.net(x)
                 prediction = logit.max(1)[1]
 
-                correct = torch.eq(prediction, y).float().mean().data[0]
+                #correct = torch.eq(prediction, y).float().mean().data[0]
+                correct = torch.eq(prediction, y).float().mean().item()
                 cost = F.cross_entropy(logit, y)
 
                 self.optim.zero_grad()
@@ -117,7 +118,8 @@ class Solver(object):
                         print()
                         print(self.env_name)
                         print('[{:03d}:{:03d}]'.format(self.global_epoch, batch_idx))
-                        print('acc:{:.3f} loss:{:.3f}'.format(correct, cost.data[0]))
+                        #print('acc:{:.3f} loss:{:.3f}'.format(correct, cost.data[0]))
+                        print('acc:{:.3f} loss:{:.3f}'.format(correct, cost.item()))
 
 
                     if self.tensorboard:
@@ -156,8 +158,10 @@ class Solver(object):
             logit = self.net(x)
             prediction = logit.max(1)[1]
 
-            correct += torch.eq(prediction, y).float().sum().data[0]
-            cost += F.cross_entropy(logit, y, size_average=False).data[0]
+            #correct += torch.eq(prediction, y).float().sum().data[0]
+            correct += torch.eq(prediction, y).float().sum().item()
+            #cost += F.cross_entropy(logit, y, size_average=False).data[0]
+            cost += F.cross_entropy(logit, y, size_average=False).item()
             total += x.size(0)
 
         accuracy = correct / total
@@ -296,8 +300,10 @@ class Solver(object):
 
         self.set_mode('train')
 
+        #return x_adv.data, changed.data,\
+        #        (accuracy.data[0], cost.data[0], accuracy_adv.data[0], cost_adv.data[0])
         return x_adv.data, changed.data,\
-                (accuracy.data[0], cost.data[0], accuracy_adv.data[0], cost_adv.data[0])
+                (accuracy.item(), cost.item(), accuracy_adv.item(), cost_adv.item())
 
     def save_checkpoint(self, filename='ckpt.tar'):
         model_states = {
