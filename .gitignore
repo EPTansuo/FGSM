@@ -5,6 +5,7 @@ summary/*
 output/*
 
 datasets/MNIST
+datasets/*
 
 git.sh
 .gitignore
