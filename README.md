@@ -1,6 +1,8 @@
 # FGSM(Fast Gradient Sign Method)
 <br>
 
+The repository is forked from [https://github.com/1Konny/FGSM](https://github.com/1Konny/FGSM), but partially modified in order to run successfully.
+
 ### Overview 
 Simple pytorch implementation of FGSM and I-FGSM  
 (FGSM : [explaining and harnessing adversarial examples, Goodfellow et al.])  
@@ -27,6 +29,8 @@ tensorflow(optional)
 ```
 python main.py --mode train --env_name [NAME]
 ```
+`env_name` is an optional parameter. It is also possible not to specify the value of this parameter.
+
 2. load trained classifier, generate adversarial examples, and then see outputs in the output directory
 ```
 python main.py --mode generate --iteration 1 --epsilon 0.03 --env_name [NAME] --load_ckpt best_acc.tar
